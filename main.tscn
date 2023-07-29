@@ -1,0 +1,109 @@
+[gd_scene load_steps=11 format=3 uid="uid://opbw4y827j7w"]
+
+[ext_resource type="Texture2D" uid="uid://bh5lcluy5jdy2" path="res://Images/confetti.png" id="1_l516g"]
+[ext_resource type="Texture2D" uid="uid://b72yftkjuu4y0" path="res://Images/piece-of-pie_logo2.png" id="2_q87lt"]
+[ext_resource type="Texture2D" uid="uid://bb2s55gf3y4bb" path="res://Images/blue_circle.png" id="3_gbf4l"]
+[ext_resource type="Texture2D" uid="uid://ljr2i1oifwb7" path="res://Images/red_circle.png" id="4_yeqdv"]
+[ext_resource type="Script" path="res://Scripts/ProgressScript.gd" id="6_a2dmr"]
+[ext_resource type="Material" uid="uid://cqm54fa174pyq" path="res://confetti_mat.tres" id="6_uqmkw"]
+[ext_resource type="Texture2D" uid="uid://drauynlcmiejr" path="res://Images/confetti_square.png" id="7_di8f2"]
+[ext_resource type="Script" path="res://Scripts/RewardScript.gd" id="7_qi6vu"]
+[ext_resource type="AudioStream" uid="uid://dr7wl8j4iildi" path="res://Kids Cheering - Sound Effect (HD) (320 kbps).mp3" id="8_mjsnc"]
+
+[sub_resource type="GDScript" id="GDScript_x15xu"]
+script/source = "extends Control
+
+@onready var save_file = Saving.data;
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_x15xu")
+
+[node name="Confetti" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_l516g")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_q87lt")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="VBoxContainer"]
+layout_mode = 2
+max_value = 360.0
+fill_mode = 4
+nine_patch_stretch = true
+stretch_margin_top = 100
+stretch_margin_bottom = 75
+texture_under = ExtResource("3_gbf4l")
+texture_progress = ExtResource("4_yeqdv")
+script = ExtResource("6_a2dmr")
+
+[node name="ConfettiParticles" type="GPUParticles2D" parent="VBoxContainer/TextureProgressBar"]
+position = Vector2(89, -1.5)
+emitting = false
+amount = 100
+process_material = ExtResource("6_uqmkw")
+texture = ExtResource("7_di8f2")
+lifetime = 5.0
+one_shot = true
+speed_scale = 1.5
+explosiveness = 0.7
+fixed_fps = 60
+
+[node name="ChildCheering" type="AudioStreamPlayer" parent="VBoxContainer/TextureProgressBar"]
+stream = ExtResource("8_mjsnc")
+volume_db = -18.664
+
+[node name="PieceButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Add Piece"
+
+[node name="RewardLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Rewards: "
+script = ExtResource("7_qi6vu")
+
+[node name="RewardButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Submit Reward"
+
+[connection signal="finished_pie" from="VBoxContainer/TextureProgressBar" to="VBoxContainer/RewardLabel" method="_on_texture_progress_bar_finished_pie"]
+[connection signal="pressed" from="VBoxContainer/PieceButton" to="VBoxContainer/TextureProgressBar" method="_on_piece_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RewardButton" to="VBoxContainer/RewardLabel" method="_on_reward_button_pressed"]
