@@ -21,7 +21,7 @@ func load_data():
 			"rewards": 1
 		}
 		save_data()
-		
+		return
 	var file = FileAccess.open(save_filename, FileAccess.READ)
 	data = file.get_var()
 	file.close()
