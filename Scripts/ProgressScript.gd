@@ -7,6 +7,9 @@ extends TextureProgressBar
 
 signal finished_pie
 
+var NUM_PIECES_TO_REWARD = 6
+var VALUE_STEP = 360/NUM_PIECES_TO_REWARD
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.value = save_file["pie_value"]
@@ -14,7 +17,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if self.value == 360:
+	if self.value >= 360:
 		self.value = 0
 		save_file["pie_value"] = 0
 		emit_signal("finished_pie")
@@ -24,6 +27,6 @@ func _process(delta):
 
 
 func _on_piece_button_pressed():
-	self.value += 60
-	save_file["pie_value"] += 60
+	self.value += VALUE_STEP
+	save_file["pie_value"] += VALUE_STEP
 	Saving.save_data()
